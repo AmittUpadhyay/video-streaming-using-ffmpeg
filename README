@@ -1,0 +1,79 @@
+Video Streaming Application
+This project is a video streaming application that captures video frames using a webcam, encodes the frame data, and provides functionalities to play and remux videos. The application uses ffmpeg and win32 libraries.
+Prerequisites
+Before you begin, ensure you have the following installed on your system:
+•	Microsoft Visual Studio 2022 Build Tools
+•	ffmpeg
+Setting Up the Environment
+To set up the environment variables required for building the project, use the scripts/set_env.bat batch file. This file sets the include paths, library paths, and updates the system PATH.
+scripts/set_env.bat
+Run this batch file to set up the environment: scripts/set_env.bat
+Building the Project
+To build the project, use the scripts/build.bat batch file. This file compiles the source files and links the necessary libraries to create the executable.
+scripts/build.bat
+Run this batch file to build the project: scripts/build.bat
+Running the Executable
+Use scripts/run.bat file to run the compiled and linked executable file.
+VideoStream
+The VideoStream class handles video capture, encoding, and streaming functionalities.
+Key Features
+•	initializeCamera: Initializes the webcam using ffmpeg APIs.
+•	getFrameData: Captures a single frame of video data and returns it in a char buffer.
+•	listenForKeyPress: Listens for a key press to control the exit of the program.
+•	cleanupCamera: Cleans up the resources allocated for the camera.
+•	remuxVideo: Remuxes the final mp4 encoded video to ffmp4 format.
+•	playVideo: Plays the specified video file.
+•	videoCaptureAndEncoding: Captures video data, renders it to the preview window, and encodes it to an mp4 container.
+WebSocketServer
+The WebSocketServer class handles WebSocket server operations, including starting the server, handling client connections, and sending data frames.
+Key Features
+•	Initialization: The server is initialized to listen on a specified port.
+•	Client Handling: Manages incoming client connections and handles WebSocket communication.
+•	Data Transmission: Supports sending WebSocket frames and FMP4 data to clients.
+•	Security: Utilizes SHA-1 hashing and Base64 encoding for secure communication.
+
+VideoCaptureGUI
+The VideoCaptureGUI class manages the graphical user interface for video capture, including rendering frames and interacting with video streaming objects.
+Key Features
+•	GUI Management: Handles the creation and management of GUI elements for video capture.
+•	Frame Rendering: Renders video frames in the preview window.
+•	Video Streaming: Manages video streaming in a separate thread.
+•	User Interaction: Provides buttons for starting/stopping video capture, remuxing, and playing videos.
+
+FFmpegEncoder
+The FFmpegEncoder class is responsible for encoding video frames using FFmpeg, providing functionalities to initialize the encoder, encode video frames, and manage resources.
+Key Features
+•	Initialization: Sets up the encoder with specified parameters such as resolution, frame rate, bitrate, and pixel formats.
+•	Frame Encoding: Encodes video frames and writes them to the output file.
+•	Resource Management: Manages the allocation and release of resources used for encoding.
+
+VideoStreamEncoder
+The VideoStreamEncoder class handles the encoding of video streams, providing methods to open, write, and close the encoder.
+Key Features
+•	Initialization: Sets up the encoder with specified parameters such as resolution, frame rate, bitrate, and pixel formats.
+•	Frame Encoding: Encodes video frames and writes them to the output file.
+•	Resource Management: Manages the allocation and release of resources used for encoding.
+•	Queue Management: Manages a queue for storing encoded frames.
+•	Remuxing: Provides functionality to remux video data.
+
+VideoStreamSocket
+The VideoStreamSocket class handles video streaming over WebSocket, managing connections and transmitting video data to clients. used below 3rd party libraries:
+
+git clone https://github.com/zaphoyd/websocketpp.git
+git clone https://github.com/chriskohlhoff/asio.git
+
+Key Features
+•	Initialization: Sets up the WebSocket server to listen on a specified port.
+•	Client Handling: Manages incoming client connections and handles WebSocket communication.
+•	Data Transmission: Sends video data to all connected clients.
+•	Synchronization: Uses mutexes and condition variables to manage client connections.
+
+client
+Client code to receive the fmp4 video data is available in src/client.html.
+•	Final executables will be generated in the 'exe' directory.
+•	Output video files will be stored in the 'output' directory.
+•	All the batch scripts are kept in the 'scripts' directory.
+Note: Add paths relative to your machine.
+Link for Visual Studio Build Tools: https://aka.ms/vs/17/release/vs_BuildTools.exe - Link for ffmpeg library: https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-full-shared.7z
+
+

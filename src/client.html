@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Video Stream</title>
+    <style>
+        video {
+            width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <video id="video" controls autoplay></video>
+    <button id="getEpochButton">Get Epoch Time</button>
+    <p id="epochTime"></p>
+    <script>
+        const video = document.getElementById('video');
+        const ws = new WebSocket('ws://localhost:9002');
+        let mediaSource = new MediaSource();
+        let sourceBuffer;
+        let queue = [];
+
+        video.src = URL.createObjectURL(mediaSource);
+
+        mediaSource.addEventListener('sourceopen', () => {
+            const mimeCodec = 'video/mp4; codecs="avc1.64001e, mp4a.40.2"';
+            if (MediaSource.isTypeSupported(mimeCodec)) {
+                sourceBuffer = mediaSource.addSourceBuffer(mimeCodec);
+                console.log('SourceBuffer created');
+
+                sourceBuffer.addEventListener('updateend', () => {
+                    console.log('SourceBuffer updateend event');
+                    if (queue.length > 0 && !sourceBuffer.updating && mediaSource.readyState === 'open') {
+                        sourceBuffer.appendBuffer(queue.shift());
+                    }
+                });
+
+                sourceBuffer.addEventListener('error', (e) => {
+                    console.error('SourceBuffer error:', e);
+                });
+            } else {
+                console.error('MIME type or codec not supported:', mimeCodec);
+            }
+        });
+
+        ws.binaryType = 'arraybuffer';
+        ws.onmessage = function(event) {
+            console.log('Received data of size:', event.data.byteLength);
+            if (sourceBuffer && !sourceBuffer.updating && mediaSource.readyState === 'open') {
+                try {
+                    sourceBuffer.appendBuffer(new Uint8Array(event.data));
+                    console.log('Appended buffer of size:', event.data.byteLength);
+                } catch (e) {
+                    console.error('Error appending buffer:', e);
+                }
+            } else {
+                console.log('SourceBuffer not ready or updating, queuing data');
+                queue.push(new Uint8Array(event.data));
+            }
+        };
+
+        ws.onopen = function() {
+            console.log('WebSocket connection established');
+        };
+
+        ws.onclose = function() {
+            console.log('WebSocket connection closed');
+        };
+
+        ws.onerror = function(error) {
+            console.error('WebSocket error:', error);
+        };
+
+        document.getElementById('getEpochButton').addEventListener('click', () => {
+            ws.send('get_epoch');
+        });
+    </script>
+</body>
+</html>

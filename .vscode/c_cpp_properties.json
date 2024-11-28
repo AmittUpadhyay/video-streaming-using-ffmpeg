@@ -1,0 +1,32 @@
+{
+    "configurations": [
+        {
+            "name": "Win32",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "C:/Program Files (x86)/Windows Kits/10/Include/10.0.22621.0/shared/",
+                "C:/Users/164293/OneDrive - Arrow Electronics, Inc/Desktop/projects/ffmpeg/inc",
+                "C:/Users/164293/scoop/apps/OpenSSL/current/include",
+                "C:/Users/164293/asio/asio/include",
+                "C:/Users/164293/asio/asio/include/asio",
+                "C:/Users/164293/websocketpp/",
+                "C:/Users/164293/scoop/apps/boost/current"
+                
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE"
+            ],
+            "windowsSdkVersion": "10.0.22621.0",
+            "compilerPath": "cl.exe",
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "windows-msvc-x64",
+            "browse": {
+                "limitSymbolsToIncludedHeaders": false
+            }
+        }
+    ],
+    "version": 4
+}

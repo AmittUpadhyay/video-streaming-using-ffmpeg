@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>fMP4 Video Player</title>
+</head>
+<body>
+    <video id="videoPlayer" controls></video>
+
+    <script>
+        const video = document.getElementById('videoPlayer');
+        const mediaSource = new MediaSource();
+        video.src = URL.createObjectURL(mediaSource);
+
+        mediaSource.addEventListener('sourceopen', () => {
+            console.log('MediaSource opened');
+            const sourceBuffer = mediaSource.addSourceBuffer('video/mp4; codecs="avc1.64001e, mp4a.40.2"');
+
+            // Fetch the fMP4 data from the server
+            fetch('http://localhost:9002/video')
+                .then(response => response.arrayBuffer())
+                .then(data => {
+                    sourceBuffer.appendBuffer(data);
+                })
+                .catch(error => console.error('Error fetching video data:', error));
+        });
+
+        mediaSource.addEventListener('sourceended', () => {
+            console.log('MediaSource ended');
+        });
+
+        mediaSource.addEventListener('sourceclose', () => {
+            console.log('MediaSource closed');
+        });
+
+        mediaSource.addEventListener('error', (e) => {
+            console.error('MediaSource error:', e);
+        });
+
+        video.addEventListener('error', (e) => {
+            console.error('Video element error:', e);
+        });
+    </script>
+</body>
+</html>

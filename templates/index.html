@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Capture</title>
+    <script>
+        function sendRequest(url) {
+            fetch(url, { method: 'POST' })
+                .then(response => response.json())
+                .then(data => alert(data.status))
+                .catch(error => console.error('Error:', error));
+        }
+
+        function toggleRecording() {
+            sendRequest('/toggle_recording');
+        }
+
+        function playVideo() {
+            sendRequest('/play_video');
+        }
+    </script>
+</head>
+<body>
+    <h1>Video Capture</h1>
+    <button onclick="toggleRecording()">Start/Stop Recording</button>
+    <button onclick="playVideo()">Play Video</button>
+</body>
+</html>
