@@ -16,7 +16,7 @@ class videoStream;
  * for video capture, including rendering frames and interacting with
  * video streaming objects.
  */
-class VideoCaptureGUI {
+class VideoCaptureGUI:public Observer {
 public:
     /**
      * @brief Constructs a VideoCaptureGUI object.
@@ -41,6 +41,7 @@ public:
      *
      * @param nCmdShow Specifies how the window is to be shown.
      */
+    void update(unsigned char* update , uint32_t width, uint32_t height) override;
     void Show(int nCmdShow);
 
      /**

@@ -5,11 +5,14 @@
 #include <mutex>
 #include <condition_variable>
 
+
 extern "C"{
 #include <libavformat/avformat.h>
 #include <libavcodec/avcodec.h>
 }
 #include <CThreadSafeQueue.hpp>
+#include<CObserver.hpp>
+
 
 struct Box {
     uint32_t size;
@@ -89,7 +92,33 @@ public:
      */
     bool remuxVideo(const char* inputFilename, const char* outputFilename);
 
+    /**
+     * @brief Sets the observer for the video stream.
+     * 
+     * This function assigns an observer to the video stream, which will be notified of various events.
+     * 
+     * @param observer A pointer to the Observer object to be set.
+     */
+    void setObserver(Observer* observer) {
+    m_observer = observer;
+    }
 
+    /**
+     * @brief Notifies the observer with the provided video frame data.
+     *
+     * This function is called to update the observer with new video frame data.
+     * If an observer is registered, it will call the observer's update method
+     * with the provided frame data, width, and height.
+     *
+     * @param data Pointer to the video frame data.
+     * @param width Width of the video frame.
+     * @param height Height of the video frame.
+     */
+    void notifyObserver(unsigned char* data, uint32_t width, uint32_t height) {
+        if (m_observer) {
+            m_observer->update(data, width, height);
+        }
+    }
 
     /**
      * @brief Play the latest video file (.mp4 or .fmp4).
@@ -118,20 +147,6 @@ public:
      */
     void sendLiveVideoToClient();
 
-/**
- * @brief Sets the GUI object for the video capture interface.
- *
- * This function assigns the provided pointer to a VideoCaptureGUI object
- * to the member variable m_pGUIptr. This allows the video capture interface
- * to interact with the specified GUI object.
- *
- * @param pGUIptr Pointer to the VideoCaptureGUI object to be set.
- */
-inline void setGUIObject(VideoCaptureGUI* pGUIptr)
-{
-    m_pGUIptr = pGUIptr;
-}
-
 
     /**
      * @brief Destructor for the videoStream class.
@@ -144,7 +159,7 @@ inline void setGUIObject(VideoCaptureGUI* pGUIptr)
     AVFormatContext* m_formatContext{nullptr}; ///< Pointer variable for video format context.
     AVCodecContext* m_decoderContext{nullptr}; ///< Pointer variable for decoder format context.
     int m_videoStreamIndex = 0; ///< Integer for video stream index.
-    VideoCaptureGUI* m_pGUIptr{nullptr}; ///< pointer for the GUI object.
-    
+    Observer *m_observer = nullptr;  ///< @brief Pointer to an Observer object.
+
 };
 #endif

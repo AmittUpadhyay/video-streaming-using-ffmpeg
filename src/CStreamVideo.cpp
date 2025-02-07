@@ -1,5 +1,6 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+#include <winsock2.h>
 #include <thread>
 #include <conio.h> 
 #include <iostream>
@@ -388,7 +389,8 @@ void videoStream::sendLiveVideoToClient() {
         while (m_recording.load()) {
             unsigned char* data = getFrameData(width, height);
             if (data) {
-                m_pGUIptr->RenderFrame(m_pGUIptr->getPreviewWindow(), data, width, height);
+                //m_pGUIptr->RenderFrame(m_pGUIptr->getPreviewWindow(), data, width, height);
+                notifyObserver(data, width, height);
                 frameQueue.push(data);
             }
         }
@@ -501,7 +503,9 @@ int videoStream::videoCaptureAndEncoding() {
                 //std::cout << "Frame captured: " << width << "x" << height << std::endl;
                 // Render the frame
                 
-                m_pGUIptr->RenderFrame(m_pGUIptr->getPreviewWindow(), data, width, height);
+                //m_pGUIptr->RenderFrame(m_pGUIptr->getPreviewWindow(), data, width, height);
+                notifyObserver(data, width, height);
+
                 // Push the data to the encoding queue
                 frameQueue.push(data);
             } else {
@@ -613,7 +617,8 @@ void videoStream::playVideo(const char* filename) {
                         SWS_BILINEAR, nullptr, nullptr, nullptr
                     );
                     sws_scale(swsCtx, frame->data, frame->linesize, 0, frame->height, rgbFrame->data, rgbFrame->linesize);
-                    m_pGUIptr->RenderFrame(m_pGUIptr->getPreviewWindow(), rgbFrame->data[0], width, height);
+                    //m_pGUIptr->RenderFrame(m_pGUIptr->getPreviewWindow(), rgbFrame->data[0], width, height);
+                    notifyObserver(rgbFrame->data[0], width, height);
                     av_free(rgbBuffer);
                     av_frame_free(&rgbFrame);
                     sws_freeContext(swsCtx);

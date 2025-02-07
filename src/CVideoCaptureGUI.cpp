@@ -2,7 +2,7 @@
 #include<iostream>
 #include<thread>
 #include <mutex>
-#include<CStreamVideo.hpp>
+#include <CStreamVideo.hpp>
 #include <fstream>
 #include <CVideoCaptureGUI.hpp>
 #include <CWebSocketServer.hpp>
@@ -29,8 +29,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     auto vsPtr = std::make_unique<videoStream>();
     auto uiPtr = std::make_unique<VideoCaptureGUI>(hInstance);
 
-    uiPtr->setVideoStreamingObject(vsPtr.get());
-    vsPtr->setGUIObject(uiPtr.get());
+   if (vsPtr && uiPtr) {
+        vsPtr->setObserver(uiPtr.get()); 
+   }
 
     std::cout << "Console window created:" <<nCmdShow << std::endl; 
     uiPtr->Show(nCmdShow);
@@ -126,6 +127,10 @@ VideoCaptureGUI::~VideoCaptureGUI() {
 
 }
 
+void VideoCaptureGUI::update(unsigned char* data , uint32_t width, uint32_t height)
+{
+    RenderFrame(getPreviewWindow(), data, width, height);
+}
 
 void VideoCaptureGUI::Show(int nCmdShow) {
     ShowWindow(hwnd, nCmdShow);
