@@ -2,8 +2,6 @@
 #ifndef OBSERVER_HPP
 #define OBSERVER_HPP
 
-//#define _WINSOCK_DEPRECATED_NO_WARNINGS
-//#define _WIN32_WINNT 0x0601
 class Observer
 {
 public:
